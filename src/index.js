@@ -35,14 +35,29 @@ function isInputValue() {
     } else
         btnSearch.addEventListener('click', sendRequest)
         btnLoadMore.addEventListener('click', nextPage)
-    }
+}
+    
+let options = {
+    root: null,
+    rootMargin: '450px',
+    threshold: 1.0
+}
 
+const observer = new IntersectionObserver(onLoad, options);
+function onLoad(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      nextPage()
+  }
+    })
+}
 
 function sendRequest(e) {
     e.preventDefault();
     galleryItems.innerHTML = '';
     id = input.elements[0].value;
-    page = 1;
+  page = 1;
+        bodyColor()
     getImages(id);
 }
 
@@ -53,12 +68,13 @@ async function getImages() {
         const { data: { hits } } = response
         createMarkup(hits)
         galleryItems.insertAdjacentHTML('beforeend', createMarkup(hits))
-        lightbox.refresh();
+      lightbox.refresh();
+      observer.observe(btnLoadMore)
         smoothScrolling()
-        btnLoadMore.style.visibility="visible"
+        // btnLoadMore.style.visibility="visible"
         notification(response)
-        bodyColor()
-console.dir(document);
+
+      input.elements[0].value = ''
   } catch (error) {
     console.error(error);
   }
@@ -90,16 +106,16 @@ function createMarkup(hits) {
 
 function nextPage() {
     page += 1
-    console.log(page);
     getImages(page)
 }
 
 function notification(arr) {
-    const arrLength = arr.data.hits.length
-    let totalPages = arr.data.totalHits / searchParams.get("per_page")
+  const arrLength = arr.data.hits.length
+  let totalPages = arr.data.totalHits / searchParams.get("per_page")
     if (arrLength === 0) {
         Notiflix.Notify.failure(`Sorry, there are no images matching your search "${input.elements[0].value}". Please try again.`);
     } else if (Math.ceil(totalPages) === page) {
+      observer.unobserve(btnLoadMore)
         btnLoadMore.style.visibility="hidden"
         Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
     } else if(page === 1) {
@@ -124,12 +140,9 @@ function getRandomHexColor() {
 
 function bodyColor() {
     const body = document.querySelector('body')
-    body.style.backgroundImage = `linear-gradient(
+  body.style.backgroundImage = `linear-gradient(90deg,
       ${getRandomHexColor()},
-      ${getRandomHexColor()} 0%,
-      ${getRandomHexColor()} 26%,
-      ${getRandomHexColor()} 44%,
-      ${getRandomHexColor()} 75%,
-      ${getRandomHexColor()} 100%
+      ${getRandomHexColor()},
+      ${getRandomHexColor()}
     )`;
 }
