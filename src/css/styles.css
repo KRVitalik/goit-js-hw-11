@@ -32,12 +32,23 @@ ul {
   padding: 30px;
 }
 
-button {
-  border-radius: 5px;
+.send_form {
+  top: 0;
+  right: 0;
+  border-radius: 50px;
+  height: 40px;
+  background-color: rgb(255, 128, 0);
+  border: 0;
+  padding: 10px;
+  outline: 3px solid rgb(255, 128, 0);
 }
 
 .form-input {
-  border-radius: 5px;
+  border-radius: 50px;
+  height: 40px;
+  padding: 10px;
+  border: 0;
+  outline: 3px solid rgb(255, 128, 0);
 }
 
 .gallery {
@@ -52,6 +63,7 @@ button {
 .photo-card {
   display: flex;
   flex-direction: column;
+  height: 300px;
   max-width: 280px;
   border-radius: 5px;
   overflow: hidden;
@@ -93,7 +105,6 @@ button {
   display: flex;
   flex-direction: column;
   text-align: center;
-  gap: 5px;
 }
 
 .load-more {

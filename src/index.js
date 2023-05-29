@@ -34,7 +34,7 @@ function isInputValue() {
         return
     } else
         btnSearch.addEventListener('click', sendRequest)
-        btnLoadMore.addEventListener('click', nextPage)
+        // btnLoadMore.addEventListener('click', nextPage)
 }
     
 let options = {
@@ -57,8 +57,9 @@ function sendRequest(e) {
     galleryItems.innerHTML = '';
     id = input.elements[0].value;
   page = 1;
-        bodyColor()
-    getImages(id);
+      bodyColor()
+      observer.unobserve(btnLoadMore)
+  getImages(id);
 }
 
 async function getImages() {
@@ -67,14 +68,11 @@ async function getImages() {
         const response = await axios.get(`${URL}`);
         const { data: { hits } } = response
         createMarkup(hits)
-        galleryItems.insertAdjacentHTML('beforeend', createMarkup(hits))
-      lightbox.refresh();
+      galleryItems.insertAdjacentHTML('beforeend', createMarkup(hits))
       observer.observe(btnLoadMore)
-        smoothScrolling()
+      notification(response)
+      lightbox.refresh();
         // btnLoadMore.style.visibility="visible"
-        notification(response)
-
-      input.elements[0].value = ''
   } catch (error) {
     console.error(error);
   }
@@ -88,16 +86,16 @@ function createMarkup(hits) {
     </a>
     <div class="info">
      <p class="info-item">
-       <b>Likes</b>${arr.likes}
+       <b>&#129505</b>${arr.likes}
      </p>
      <p class="info-item">
-       <b>Views</b>${arr.views}
+       <b>&#128065</b>${arr.views}
      </p>
      <p class="info-item">
-       <b>Comments</b>${arr.comments}
+       <b>&#128172</b>${arr.comments}
      </p>
      <p class="info-item">
-       <b>Downloads</b>${arr.downloads}
+       <b>&#128229</b>${arr.downloads}
      </p>
    </div>
 </div>`
@@ -112,14 +110,16 @@ function nextPage() {
 function notification(arr) {
   const arrLength = arr.data.hits.length
   let totalPages = arr.data.totalHits / searchParams.get("per_page")
-    if (arrLength === 0) {
-        Notiflix.Notify.failure(`Sorry, there are no images matching your search "${input.elements[0].value}". Please try again.`);
+  if (arrLength === 0) {
+observer.unobserve(btnLoadMore)
+    Notiflix.Notify.failure(`Sorry, there are no images matching your search. Please try again.`);
     } else if (Math.ceil(totalPages) === page) {
+      // btnLoadMore.style.visibility="hidden"
+      Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
       observer.unobserve(btnLoadMore)
-        btnLoadMore.style.visibility="hidden"
-        Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
     } else if(page === 1) {
-        Notiflix.Notify.success(`Hooray! We found ${arr.data.totalHits} images.`);
+    Notiflix.Notify.success(`Hooray! We found ${arr.data.totalHits} images.`);
+            smoothScrolling()
     }
 }
 
