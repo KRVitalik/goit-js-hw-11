@@ -58,7 +58,7 @@ function sendRequest(e) {
     id = input.elements[0].value;
   page = 1;
       bodyColor()
-      observer.unobserve(btnLoadMore)
+      // observer.unobserve(btnLoadMore)
   getImages(id);
 }
 
