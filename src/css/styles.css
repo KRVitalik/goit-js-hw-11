@@ -97,7 +97,7 @@ ul {
 .info {
   display: flex;
   justify-content: space-between;
-  padding: 5px;
+  padding: 0 34px;
   /* background-color: #eae033; */
 }
 
